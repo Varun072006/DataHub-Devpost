@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HumanOS Sentinel — Royal Human Risk Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  
+  <!-- MediaPipe Tasks Vision CDN -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <!-- HumanOS Royal Emblem (Deep Symbolic Logo) -->
+        <div class="logo-icon">
+          <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="sentinel-royal-logo">
+            <defs>
+              <linearGradient id="royalGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fef08a" />
+                <stop offset="50%" stop-color="#d4af37" />
+                <stop offset="100%" stop-color="#b8860b" />
+              </linearGradient>
+              <linearGradient id="royalSapphireGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1e40af" />
+                <stop offset="50%" stop-color="#0f2b5c" />
+                <stop offset="100%" stop-color="#091e42" />
+              </linearGradient>
+              <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#10b981" />
+                <stop offset="100%" stop-color="#059669" />
+              </linearGradient>
+              <filter id="royalGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#d4af37" flood-opacity="0.3" />
+              </filter>
+            </defs>
+
+            <!-- 1. Shield Boundary (Governance & Safety Sentinel) -->
+            <path d="M50 8 L82 22 V50 C82 70 50 90 50 90 C50 90 18 70 18 50 V22 L50 8 Z" 
+                  fill="url(#royalSapphireGrad)" stroke="url(#royalGoldGrad)" stroke-width="3" filter="url(#royalGlow)"/>
+
+            <!-- 2. DataHub Lineage Orbit Rings (Lineage & Metadata Graph) -->
+            <circle cx="50" cy="46" r="26" stroke="url(#royalGoldGrad)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.65" />
+            <circle cx="50" cy="46" r="34" stroke="url(#royalGoldGrad)" stroke-width="1" opacity="0.35" />
+
+            <!-- 3. Kinematic Human Figure (Pose & Motion Engine) -->
+            <circle cx="50" cy="28" r="5" fill="url(#royalGoldGrad)" stroke="#ffffff" stroke-width="1" />
+            <path d="M50 33 V58" stroke="url(#royalGoldGrad)" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M32 38 L50 42 L68 38" stroke="url(#royalGoldGrad)" stroke-width="2.5" stroke-linecap="round" />
+            <path d="M36 68 L50 58 L64 68" stroke="url(#royalGoldGrad)" stroke-width="2.5" stroke-linecap="round" />
+
+            <circle cx="32" cy="38" r="2.5" fill="#ffffff" stroke="url(#royalGoldGrad)" stroke-width="1" />
+            <circle cx="68" cy="38" r="2.5" fill="#ffffff" stroke="url(#royalGoldGrad)" stroke-width="1" />
+            <circle cx="36" cy="68" r="2.5" fill="#ffffff" stroke="url(#royalGoldGrad)" stroke-width="1" />
+            <circle cx="64" cy="68" r="2.5" fill="#ffffff" stroke="url(#royalGoldGrad)" stroke-width="1" />
+
+            <!-- 4. Privacy Core Eye (Edge Privacy Boundary) -->
+            <circle cx="50" cy="46" r="6" fill="#0f2b5c" stroke="url(#royalGoldGrad)" stroke-width="1.5" />
+            <circle cx="50" cy="46" r="2.5" fill="url(#emeraldGrad)" />
+
+            <!-- 5. Metadata Tri-Nodes (Graph Context) -->
+            <circle cx="50" cy="14" r="2" fill="url(#royalGoldGrad)" />
+            <circle cx="78" cy="62" r="2" fill="url(#royalGoldGrad)" />
+            <circle cx="22" cy="62" r="2" fill="url(#royalGoldGrad)" />
+          </svg>
+        </div>
+
+        <div class="brand-text">
+          <h1>HUMANOS SENTINEL</h1>
+          <p>Royal Privacy-Preserving Human Risk Intelligence & DataHub Governance</p>
+        </div>
+      </div>
+      
+      <div class="header-badges">
+        <span class="badge privacy">
+          <span class="dot"></span> 🔒 RAW VIDEO DISCARDED
+        </span>
+        <span class="badge datahub">
+          <span class="dot"></span> DATAHUB GRAPH CONNECTED
+        </span>
+        <span class="badge agent">
+          <span class="dot"></span> AGENT ACTIVE
+        </span>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-layout">
+      <!-- Upper Section: Video Feed & Human State -->
+      <section class="upper-grid">
+        <!-- Webcam & Pose Overlay Card -->
+        <div class="royal-card video-card">
+          <div class="card-header">
+            <h2>LIVE SKELETAL MOTION TRACKING</h2>
+            <span class="fps-tag" id="fpsDisplay">30 FPS</span>
+          </div>
+          <div class="video-container">
+            <video id="webcam" autoplay playsinline muted></video>
+            <canvas id="skeletonCanvas"></canvas>
+            <div class="privacy-overlay">
+              <span>🔒 Privacy Boundary: Landmarks extracted in-browser. Raw video frame destroyed.</span>
+            </div>
+            <div class="video-loader" id="videoLoader">
+              <div class="spinner"></div>
+              <p>Initializing MediaPipe Pose Engine...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Human State Dashboard Card -->
+        <div class="royal-card state-card">
+          <div class="card-header">
+            <h2>HUMAN MOTION STATE</h2>
+            <span class="status-pill" id="posturePill">STABLE</span>
+          </div>
+
+          <div class="metrics-grid">
+            <!-- Risk Gauge -->
+            <div class="metric-box risk-box">
+              <div class="metric-label">
+                <span>RISK SCORE INDEX</span>
+                <span class="trend-indicator" id="trendIndicator">→ STABLE</span>
+              </div>
+              <div class="metric-value-row">
+                <span class="value-large" id="riskValue">18%</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="riskBar" style="width: 18%;"></div>
+              </div>
+            </div>
+
+            <!-- Stability Gauge -->
+            <div class="metric-box">
+              <div class="metric-label">BIOMECHANICAL STABILITY</div>
+              <div class="value-medium" id="stabilityValue">89%</div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill gold" id="stabilityBar" style="width: 89%;"></div>
+              </div>
+            </div>
+
+            <!-- Kinematics Breakdown -->
+            <div class="kinematics-list">
+              <div class="kinematic-item">
+                <span>Torso Angle:</span>
+                <strong id="torsoAngleVal">4° (Vertical)</strong>
+              </div>
+              <div class="kinematic-item">
+                <span>Left Knee Flex:</span>
+                <strong id="kneeLeftVal">168°</strong>
+              </div>
+              <div class="kinematic-item">
+                <span>Right Knee Flex:</span>
+                <strong id="kneeRightVal">166°</strong>
+              </div>
+              <div class="kinematic-item">
+                <span>Velocity Jitter:</span>
+                <strong id="velocityVal">0.02 (Smooth)</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="card-actions">
+            <button class="btn btn-primary" id="investigateBtn">
+              <span>🔍 INVESTIGATE WITH AGENT</span>
+            </button>
+            <button class="btn btn-secondary" id="trustBtn">
+              <span>❓ WHY TRUST THIS PREDICTION?</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lower Section: Agent Investigation Panel -->
+      <section class="royal-card agent-panel">
+        <div class="panel-header">
+          <div class="title-group">
+            <div class="royal-icon">❖</div>
+            <h2>DATAHUB SENTINEL AGENT & GOVERNANCE</h2>
+          </div>
+          <span class="timestamp" id="reportTimestamp">Ready for analysis</span>
+        </div>
+
+        <div class="panel-body">
+          <!-- Investigation Steps Tracker -->
+          <div class="steps-tracker" id="stepsTracker">
+            <div class="step-chip active">1. Observe Pose</div>
+            <div class="step-chip">2. Compute State</div>
+            <div class="step-chip">3. Query DataHub</div>
+            <div class="step-chip">4. Trace Lineage</div>
+            <div class="step-chip">5. Explain Risk</div>
+            <div class="step-chip">6. Write Incident</div>
+          </div>
+
+          <!-- Output Log & Report Box -->
+          <div class="investigation-content" id="investigationContent">
+            <div class="placeholder-state">
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4M12 8h.01"/>
+              </svg>
+              <p>Click <strong>"INVESTIGATE WITH AGENT"</strong> or lean/crouch to trigger live DataHub metadata graph reasoning.</p>
+            </div>
+          </div>
+
+          <!-- Interactive Lineage Flow Visualization -->
+          <div class="lineage-section" id="lineageSection" style="display: none;">
+            <h3>DATAHUB END-TO-END GOVERNED LINEAGE</h3>
+            <div class="lineage-nodes" id="lineageNodes">
+              <!-- Dynamically rendered -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Trust Audit Modal / Drawer -->
+    <div class="modal-backdrop" id="trustModal">
+      <div class="royal-card modal-card">
+        <div class="modal-header">
+          <h2>DATAHUB GOVERNED PREDICTION AUDIT</h2>
+          <button class="close-btn" id="closeTrustModal">&times;</button>
+        </div>
+        <div class="modal-body" id="trustModalBody">
+          <!-- Dynamically filled -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

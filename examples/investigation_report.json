@@ -1,0 +1,63 @@
+{
+  "status": "HIGH_RISK_FLAGGED",
+  "riskLevel": "CRITICAL",
+  "riskScore": 0.78,
+  "stabilityScore": 0.31,
+  "trend": "increasing",
+  "observations": [
+    "Torso instability increased by 42% over rolling 10-second window (current tilt: 23°)",
+    "Left knee flex angle degraded to 142° indicating loss of lower-body support",
+    "Movement velocity jitter reached 0.12 (irregular motion detected)"
+  ],
+  "lineageChain": [
+    {
+      "name": "pose_landmarks",
+      "type": "DATASET",
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:humanos,pose_landmarks,PROD)",
+      "owner": "ML Platform Team"
+    },
+    {
+      "name": "fall_risk_features",
+      "type": "DATASET",
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:humanos,fall_risk_features,PROD)",
+      "owner": "ML Platform Team"
+    },
+    {
+      "name": "humanos-risk-v1",
+      "type": "MLMODEL",
+      "urn": "urn:li:mlModel:(urn:li:dataPlatform:humanos,humanos-risk-v1,PROD)",
+      "owner": "HumanOS Safety Team"
+    },
+    {
+      "name": "human_motion_events",
+      "type": "DATASET",
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:humanos,human_motion_events,PROD)",
+      "owner": "HumanOS Safety Team"
+    },
+    {
+      "name": "workplace-safety-dashboard",
+      "type": "DASHBOARD",
+      "urn": "urn:li:dashboard:(humanos,workplace-safety-dashboard)",
+      "owner": "Safety Operations"
+    }
+  ],
+  "model": {
+    "name": "humanos-risk-v1",
+    "version": "2.1.0",
+    "urn": "urn:li:mlModel:(urn:li:dataPlatform:humanos,humanos-risk-v1,PROD)",
+    "owner": "HumanOS Safety Team (safety-team@humanos.ai)",
+    "accuracy": 0.94,
+    "f1_score": 0.91
+  },
+  "recommendation": "Ask the worker to immediately pause task, adjust posture, and rest until biomechanical stability recovers.",
+  "confidence": 0.87,
+  "llmExplanation": "The HumanOS Sentinel agent verified that the high-risk alert stems from rapid torso tilt degradation coupled with irregular joint kinematics. Upstream lineage was fully traced to validated features owned by the ML Platform Team.",
+  "investigationSteps": [
+    "Inspecting live HumanOS kinematic state & circular buffer window",
+    "Searching DataHub metadata graph for responsible model 'humanos-risk-v1'",
+    "Retrieving model governance, accuracy metrics, and ownership data",
+    "Tracing 5-level end-to-end data lineage back to raw landmark dataset",
+    "Verifying privacy boundary compliance (zero video data persisted)",
+    "Synthesizing root cause & creating Safety Incident record in DataHub"
+  ]
+}

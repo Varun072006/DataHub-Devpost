@@ -1,0 +1,7 @@
+{
+  "status": "created",
+  "urn": "urn:li:dataset:(urn:li:dataPlatform:humanos,incident_1723223000,PROD)",
+  "incident_id": "incident_1723223000",
+  "datahub_url": "http://localhost:9002/dataset/urn:li:dataset:(urn:li:dataPlatform:humanos,incident_1723223000,PROD)",
+  "message": "Incident successfully registered into DataHub graph."
+}
