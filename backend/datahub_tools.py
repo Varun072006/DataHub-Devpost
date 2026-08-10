@@ -10,12 +10,12 @@ def query_graphql(query: str, variables: dict = None):
     headers = {"Content-Type": "application/json"}
     payload = {"query": query, "variables": variables or {}}
     try:
-        response = requests.post(url, json=payload, headers=headers, timeout=5)
+        response = requests.post(url, json=payload, headers=headers, timeout=2)
         if response.status_code == 200:
             return response.json()
-        logger.warning(f"GraphQL returned status {response.status_code}")
-    except Exception as e:
-        logger.warning(f"Failed to query DataHub GraphQL: {e}")
+    except Exception:
+        # Quiet fallback when GMS is offline
+        pass
     return None
 
 def search_datahub(query: str) -> dict:
@@ -142,11 +142,11 @@ def create_incident_in_datahub(report_data: dict) -> dict:
     }
     
     try:
-        res = requests.post(url, json=mcp_payload, timeout=3)
+        res = requests.post(url, json=mcp_payload, timeout=2)
         if res.status_code == 200:
             logger.info(f"Successfully emitted incident {incident_urn} to DataHub REST API")
-    except Exception as e:
-        logger.warning(f"Rest emitter fallback: {e}")
+    except Exception:
+        pass
         
     return {
         "status": "created",
