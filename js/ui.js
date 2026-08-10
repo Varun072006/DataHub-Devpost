@@ -67,11 +67,44 @@ export function animateStepChips(stepIndex) {
   });
 }
 
+/**
+ * Utility: Converts Markdown text from LLM into clean, structured HTML
+ */
+function formatMarkdownToHTML(text) {
+  if (!text) return '';
+
+  let formatted = text
+    // Replace headings (#### and ###)
+    .replace(/####\s*(.*?)(?=\n|$)/g, '<h5 class="reasoning-heading">$1</h5>')
+    .replace(/###\s*(.*?)(?=\n|$)/g, '<h4 class="reasoning-title">$1</h4>')
+    // Bold text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Code ticks
+    .replace(/`(.*?)`/g, '<code class="reasoning-code">$1</code>')
+    // Bullet points (- or *)
+    .replace(/^[-\*]\s+(.*)$/gm, '<li class="reasoning-item">$1</li>')
+    // Numbered items
+    .replace(/^\d+\.\s+(.*)$/gm, '<li class="reasoning-item">$1</li>');
+
+  // Wrap lists in <ul>
+  formatted = formatted.replace(/(<li class="reasoning-item">.*?<\/li>\s*)+/gs, '<ul class="reasoning-list">$&</ul>');
+
+  // Convert double newlines into clean paragraph blocks
+  const paragraphs = formatted.split(/\n\s*\n/);
+  return paragraphs.map(p => {
+    p = p.trim();
+    if (!p) return '';
+    if (p.startsWith('<h') || p.startsWith('<ul')) return p;
+    return `<p class="reasoning-paragraph">${p.replace(/\n/g, '<br>')}</p>`;
+  }).join('');
+}
+
 export function renderInvestigationReport(report) {
   const container = document.getElementById('investigationContent');
   document.getElementById('reportTimestamp').textContent = new Date().toLocaleTimeString();
 
   const riskPct = Math.round(report.riskScore * 100);
+  const formattedReasoning = formatMarkdownToHTML(report.llmExplanation);
 
   let html = `
     <div class="report-container">
@@ -89,7 +122,9 @@ export function renderInvestigationReport(report) {
 
       <div class="llm-box">
         <div class="box-title">DATAHUB SENTINEL REASONING (${report.model.name} v${report.model.version})</div>
-        <p style="font-size: 0.88rem; line-height: 1.6; color: #0f172a; font-weight: 500;">${report.llmExplanation}</p>
+        <div class="reasoning-body">
+          ${formattedReasoning}
+        </div>
       </div>
 
       <div class="recommendation-box">

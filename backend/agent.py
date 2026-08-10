@@ -10,17 +10,28 @@ SYSTEM_PROMPT = """
 You are the HumanOS Sentinel AI Investigation Agent.
 Your job is to investigate high-risk human motion events using DataHub's context graph.
 
-When a risk event is detected:
-1. Inspect the live HumanState (risk score, stability, posture, joint angles, trend).
-2. Query DataHub for the ML model responsible (humanos-risk-v1).
-3. Retrieve model metadata, ownership, and performance metrics.
-4. Trace upstream data lineage (pose_landmarks -> fall_risk_features -> humanos-risk-v1 -> human_motion_events -> workplace-safety-dashboard).
-5. Identify the dataset/model owners (HumanOS Safety Team, ML Platform Team).
-6. Explain the root cause based on physical evidence (torso instability, knee flex, velocity irregularity).
-7. Highlight privacy compliance (raw video discarded at MediaPipe boundary).
-8. Recommend corrective action (e.g. ask worker to pause and stabilize).
+Structure your response into clear, elegant sections using standard Markdown headings:
 
-Output clean, structured, authoritative reasoning citing DataHub URNs.
+### Event Summary
+Provide a brief summary of the risk event metrics (Risk Score %, Posture State, Trend, Torso Angle, Knee Flex Angle, Velocity Jitter).
+
+### Model & Governance Metadata
+State the responsible ML model URN (`humanos-risk-v1`), model owner (`HumanOS Safety Team`), framework, version, and performance metrics (Accuracy, F1-Score).
+
+### Upstream Lineage & Provenance
+Trace the 5-level end-to-end data lineage chain from raw landmark vectors to the workplace safety dashboard:
+- `pose_landmarks` -> `fall_risk_features` -> `humanos-risk-v1` -> `human_motion_events` -> `workplace-safety-dashboard`
+
+### Biomechanical Root Cause Analysis
+Explain the physical cause of the risk using spatial-temporal motion evidence (torso tilt instability, knee flex degradation, velocity jitter).
+
+### Privacy Compliance Audit
+Confirm edge privacy boundary compliance: raw optical video buffer was discarded locally inside the client browser via MediaPipe Task Vision, transmitting zero PII.
+
+### Corrective Action Recommendation
+Provide specific, actionable steps for the worker and safety supervisor.
+
+Keep your tone authoritative, professional, and clear.
 """
 
 def run_agent_investigation(human_state: dict) -> dict:
@@ -54,7 +65,7 @@ DataHub Context Discovered:
 - Upstream Dataset: {features_meta['urn']} (Owner: {features_meta['owner']})
 - Upstream Lineage Chain: pose_landmarks -> fall_risk_features -> humanos-risk-v1 -> human_motion_events -> workplace-safety-dashboard
 
-Analyze this event and provide a comprehensive safety investigation report.
+Synthesize this incident into the required structured sections.
     """
 
     llm_explanation = None
@@ -67,7 +78,7 @@ Analyze this event and provide a comprehensive safety investigation report.
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": user_content}
             ],
-            options={"temperature": 0.2, "max_tokens": 400}
+            options={"temperature": 0.2, "max_tokens": 500}
         )
         if response and response.get("message") and response["message"].get("content"):
             llm_explanation = response["message"]["content"]
@@ -75,7 +86,30 @@ Analyze this event and provide a comprehensive safety investigation report.
     except Exception as e:
         logger.warning(f"Ollama call failed or timed out: {e}. Using deterministic agent synthesis.")
 
-    # 3. Assemble structured report combining LLM text & DataHub graph lineage
+    if not llm_explanation:
+        llm_explanation = f"""### Event Summary
+High-risk biomechanical motion alert flagged with **{risk_score * 100:.0f}% Risk Index** (Posture: `{posture.upper()}`, Trend: `{trend.upper()}`).
+
+### Model & Governance Metadata
+- **ML Model URN:** `{model_meta['urn']}`
+- **Model Owner:** {model_meta['owner']}
+- **Performance:** {model_meta['accuracy']*100:.0f}% Test Accuracy | F1-Score: {model_meta['f1_score']}
+
+### Upstream Lineage & Provenance
+`pose_landmarks` -> `fall_risk_features` -> `humanos-risk-v1` -> `human_motion_events` -> `workplace-safety-dashboard`
+
+### Biomechanical Root Cause Analysis
+- **Torso Tilt:** Increased to {human_state.get('torsoAngle', 23)}° over rolling 10s window.
+- **Knee Flex:** Left knee flex angle degraded to {human_state.get('kneeAngle', {}).get('left', 142)}°.
+- **Velocity Jitter:** Displacement vector reached {human_state.get('movementVelocity', 0.12)}.
+
+### Privacy Compliance Audit
+✓ Raw webcam optical frames discarded in-browser via MediaPipe Task Vision. Zero PII transmitted.
+
+### Corrective Action Recommendation
+Ask worker to immediately pause current task, adjust posture, and rest until stability recovers to >85%.
+"""
+
     observations = [
         f"Torso instability increased by 42% over rolling 10-second window (current tilt: {human_state.get('torsoAngle', 23)}°)",
         f"Left knee flex angle degraded to {human_state.get('kneeAngle', {}).get('left', 142)}° indicating loss of lower-body support",
@@ -108,7 +142,7 @@ Analyze this event and provide a comprehensive safety investigation report.
         },
         "recommendation": "Ask the worker to immediately pause task, adjust posture, and rest until biomechanical stability recovers.",
         "confidence": 0.87,
-        "llmExplanation": llm_explanation or "The HumanOS Sentinel agent verified that the high-risk alert stems from rapid torso tilt degradation coupled with irregular joint kinematics. Upstream lineage was fully traced to validated features owned by the ML Platform Team.",
+        "llmExplanation": llm_explanation,
         "investigationSteps": [
             "Inspecting live HumanOS kinematic state & circular buffer window",
             "Searching DataHub metadata graph for responsible model 'humanos-risk-v1'",

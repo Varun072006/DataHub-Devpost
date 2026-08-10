@@ -552,7 +552,69 @@ body {
   color: var(--royal-sapphire);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  padding-bottom: 6px;
+}
+
+/* Structured Reasoning Formatting Typography */
+.reasoning-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #0f172a;
+}
+
+.reasoning-title {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--royal-sapphire);
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+
+}
+
+.reasoning-heading {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--royal-gold-dark);
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
+
+.reasoning-paragraph {
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.reasoning-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-left: 8px;
+  padding-left: 8px;
+  border-left: 2px solid var(--royal-gold);
+}
+
+.reasoning-item {
+  font-size: 0.85rem;
+  color: #334155;
+  font-weight: 500;
+}
+
+.reasoning-code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  background: #f1f5f9;
+  color: var(--royal-sapphire);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
 }
 
 .evidence-list {
