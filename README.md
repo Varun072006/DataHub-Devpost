@@ -20,7 +20,7 @@ Current computer vision systems answer simple questions like: *"Is a person sitt
 
 > *"What is happening to a worker's physical motion state over time, which ML model produced this risk score, can we trust its data lineage through DataHub, who owns the model, and how do we record governed interventions back to the enterprise catalog?"*
 
-### 🌟 Key Differentiators for Hackathon Judges
+### 🌟 Key Differentiators
 1. **Beyond Metadata Reading — Agent Write-Back:** The agent doesn't just read DataHub; when a high-risk posture event occurs, it programmatically creates a **Safety Incident Entity** (`urn:li:dataset:(urn:li:dataPlatform:humanos,incident_<timestamp>,PROD)`) in DataHub's graph, establishing bidirectional metadata flow.
 2. **Local LLM Tool Calling Over DataHub:** Powered by Ollama (`qwen2.5:7b`) calling real DataHub GMS REST and GraphQL endpoints (`search_datahub`, `get_entity_metadata`, `get_lineage`, `get_owners`).
 3. **100% Edge Privacy Boundary:** Raw optical video frames stay inside the browser and are discarded immediately after MediaPipe landmark extraction. Only anonymized numerical joint coordinates flow to downstream features.
